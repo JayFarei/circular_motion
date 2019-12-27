@@ -49,6 +49,7 @@ class particle {
     this.velocity = 0.05
     // to ensure the dot stays on the circle rather than being randomly generated every time
     this.distanceFromCenter = randomIntFromRange(50, 120)
+    this.lastMouse = { x:x , y:y } // where the last known location is known to start
 
     this.update = () => {
       // before the loop start - I am loggin the previous location
@@ -57,9 +58,14 @@ class particle {
       // += => increase by / seems to save me a loop
       this.radians += this.velocity
 
-      // circular motion
-      this.x = x + Math.cos(this.radians)*this.distanceFromCenter
-      this.y = y + Math.sin(this.radians)*this.distanceFromCenter
+      // Draft effect
+      const dragEffect = 0.05
+      this.lastMouse.x += (mouse.x - this.lastMouse.x)* dragEffect
+      this.lastMouse.y += (mouse.y - this.lastMouse.y)* dragEffect
+
+      // circular motion // added the drag with last mouse location
+      this.x = this.lastMouse.x + Math.cos(this.radians)*this.distanceFromCenter
+      this.y = this.lastMouse.y + Math.sin(this.radians)*this.distanceFromCenter
       //console.log(innerWidth)
       this.draw (lastPoint) // pass it as an argument to draw
       // to troubleshoot use console.log() and open the console in the browser

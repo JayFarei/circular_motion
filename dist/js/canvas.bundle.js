@@ -150,6 +150,10 @@ function () {
     this.velocity = 0.05; // to ensure the dot stays on the circle rather than being randomly generated every time
 
     this.distanceFromCenter = randomIntFromRange(50, 120);
+    this.lastMouse = {
+      x: x,
+      y: y
+    }; // where the last known location is known to start
 
     this.update = function () {
       // before the loop start - I am loggin the previous location
@@ -159,10 +163,14 @@ function () {
       }; // x is the original position / adding the radians cos (between -1 & 1) / need to move it over time => velocity
       // += => increase by / seems to save me a loop
 
-      _this.radians += _this.velocity; // circular motion
+      _this.radians += _this.velocity; // Draft effect
 
-      _this.x = x + Math.cos(_this.radians) * _this.distanceFromCenter;
-      _this.y = y + Math.sin(_this.radians) * _this.distanceFromCenter; //console.log(innerWidth)
+      var dragEffect = 0.05;
+      _this.lastMouse.x += (mouse.x - _this.lastMouse.x) * dragEffect;
+      _this.lastMouse.y += (mouse.y - _this.lastMouse.y) * dragEffect; // circular motion // added the drag with last mouse location
+
+      _this.x = _this.lastMouse.x + Math.cos(_this.radians) * _this.distanceFromCenter;
+      _this.y = _this.lastMouse.y + Math.sin(_this.radians) * _this.distanceFromCenter; //console.log(innerWidth)
 
       _this.draw(lastPoint); // pass it as an argument to draw
       // to troubleshoot use console.log() and open the console in the browser
