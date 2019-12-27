@@ -11,13 +11,16 @@ const mouse = {
   y: innerHeight / 2
 }
 
-const colors = ['#2185C5', '#7ECEFD', '#FFF6E5', '#FF7F66']
-
+const colors = ['#00bdff','#4d39ce','#088eff']
 
 // Functions
 
 function randomIntFromRange(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min)
+}
+
+function randomColor(colors) {
+  return colors[Math.floor(Math.random() * colors.length)]
 }
 
 
@@ -45,29 +48,38 @@ class particle {
     this.radians = Math.random() * Math.PI * 2
     this.velocity = 0.05
     // to ensure the dot stays on the circle rather than being randomly generated every time
-    this.distanceFromCenter = {x:randomIntFromRange(50, 120), y:randomIntFromRange(50, 120) }
+    this.distanceFromCenter = randomIntFromRange(50, 120)
 
     this.update = () => {
+      // before the loop start - I am loggin the previous location
+      const lastPoint = {x: this.x, y: this.y}
       // x is the original position / adding the radians cos (between -1 & 1) / need to move it over time => velocity
       // += => increase by / seems to save me a loop
       this.radians += this.velocity
 
       // circular motion
-      this.x = x + Math.cos(this.radians)*this.distanceFromCenter.x
-      this.y = y + Math.sin(this.radians)*this.distanceFromCenter.y
+      this.x = x + Math.cos(this.radians)*this.distanceFromCenter
+      this.y = y + Math.sin(this.radians)*this.distanceFromCenter
       //console.log(innerWidth)
-      this.draw ()
+      this.draw (lastPoint) // pass it as an argument to draw
       // to troubleshoot use console.log() and open the console in the browser
     }
+
+    this.draw = lastPoint => {
+      c.beginPath()
+      c.strokeStyle = this.color
+      c.lineWidth = this.radius
+      // coordinates for particle previous frame (I had to create it in the update function)
+      c.moveTo(lastPoint.x, lastPoint.y)
+      // coordinates for particle next frame / new location
+      c.lineTo(this.x, this.y)
+      c.stroke()
+      c.closePath()
+    }
+
   }
 
-  draw() {
-    c.beginPath()
-    c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
-    c.fillStyle = this.color
-    c.fill()
-    c.closePath()
-  }
+
 
   update() {
     this.draw()
@@ -80,15 +92,19 @@ function init() {
   particles = [];
 
   for (let i = 0; i < 50; i++) {
-    particles.push(new particle(canvas.width / 2, canvas.width / 2, 5, 'blue'))
+    // adding random size of particles
+    const radius = 1+ (Math.random () * 2)
+    particles.push(new particle(canvas.width / 2, canvas.width / 2, radius, randomColor(colors)))
   }
 }
 
 // Animation Loop
 function animate() {
   requestAnimationFrame(animate)
-  c.clearRect(0, 0, canvas.width, canvas.height)
-
+  // for each frame we are drawing a new white rectangular on top of it with trasparency, as we lay more on top of each other we start having this effect
+  c.fillStyle = 'rgba(255,255,255,0.1)'
+  c.fillRect(0, 0, canvas.width, canvas.height)
+  // need to have a look at the options available
   particles.forEach(particle => {
    particle.update()
   })
