@@ -37,7 +37,7 @@ addEventListener('resize', () => {
   init()
 })
 
-// Instatiate the class objects
+// Instantiate the class objects
 class particle {
   constructor(x, y, radius, color) {
     this.x = x
@@ -48,11 +48,11 @@ class particle {
     this.radians = Math.random() * Math.PI * 2
     this.velocity = 0.05
     // to ensure the dot stays on the circle rather than being randomly generated every time
-    this.distanceFromCenter = randomIntFromRange(50, 120)
+    this.distanceFromCenter = randomIntFromRange(5, 120)
     this.lastMouse = { x:x , y:y } // where the last known location is known to start
 
     this.update = () => {
-      // before the loop start - I am loggin the previous location
+      // before the loop start - I am logging the previous location
       const lastPoint = {x: this.x, y: this.y}
       // x is the original position / adding the radians cos (between -1 & 1) / need to move it over time => velocity
       // += => increase by / seems to save me a loop
@@ -107,7 +107,7 @@ function init() {
 // Animation Loop
 function animate() {
   requestAnimationFrame(animate)
-  // for each frame we are drawing a new white rectangular on top of it with trasparency, as we lay more on top of each other we start having this effect
+  // for each frame we are drawing a new white rectangular on top of it with transparency, as we lay more on top of each other we start having this effect
   c.fillStyle = 'rgba(255,255,255,0.1)'
   c.fillRect(0, 0, canvas.width, canvas.height)
   // need to have a look at the options available

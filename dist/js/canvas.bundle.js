@@ -149,7 +149,7 @@ function () {
     this.radians = Math.random() * Math.PI * 2;
     this.velocity = 0.05; // to ensure the dot stays on the circle rather than being randomly generated every time
 
-    this.distanceFromCenter = randomIntFromRange(50, 120);
+    this.distanceFromCenter = randomIntFromRange(5, 120);
     this.lastMouse = {
       x: x,
       y: y
